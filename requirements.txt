@@ -1,0 +1,11 @@
+voila
+jupyter
+nbconvert
+pandas
+numpy
+plotly
+dash
+folium
+geopandas
+shapely
+dash-bootstrap-components

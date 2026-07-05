@@ -1,0 +1,5 @@
+# Create .gitignore file
+echo __pycache__/ > .gitignore
+echo *.pyc >> .gitignore
+echo .DS_Store >> .gitignore
+echo .ipynb_checkpoints/ >> .gitignore
