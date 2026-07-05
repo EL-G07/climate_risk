@@ -4,9 +4,14 @@ services:
     env: python
     buildCommand: |
       pip install -r requirements.txt
-    startCommand: voila prediction.ipynb --port=$PORT --no-browser --VoilaConfiguration.ip=0.0.0.0
+      # Run your data prep notebooks (this is optional but can be helpful)
+      python -m nbconvert --to html --execute climaticscoring.ipynb --allow-errors || true
+      python -m nbconvert --to html --execute Financial_risk_tool.ipynb --allow-errors || true
+    startCommand: python server.py
     plan: free
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.18
+      - key: VOILA_DEBUG
+        value: "true"
