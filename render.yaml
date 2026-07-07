@@ -1,17 +1,10 @@
 services:
   - type: web
     name: climate-risk-dashboard
-    env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      # Run your data prep notebooks (this is optional but can be helpful)
-      python -m nbconvert --to html --execute climaticscoring.ipynb --allow-errors || true
-      python -m nbconvert --to html --execute Financial_risk_tool.ipynb --allow-errors || true
-    startCommand: python server.py
+    env: docker  # This tells Render to use Docker
     plan: free
     autoDeploy: true
+    dockerfilePath: ./Dockerfile  # Path to your Dockerfile
     envVars:
       - key: PYTHON_VERSION
         value: 3.9.18
-      - key: VOILA_DEBUG
-        value: "true"
