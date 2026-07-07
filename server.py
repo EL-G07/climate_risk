@@ -23,27 +23,33 @@ def main():
             nb
         ], check=False)
 
-    # Step 2: Fix imports in prediction.py (CORRECTED)
-    try:
-        with open("prediction.py", "r") as f:
-            content = f.read()
-        
-        # Remove the import_ipynb line completely
-        content = re.sub(r'^import import_ipynb.*$', '', content, flags=re.MULTILINE)
-        
-        # Remove any existing 'as fr' and add it correctly
-        content = re.sub(r'import Financial_risk_tool\s+(?:as\s+fr\s*)?', 'import Financial_risk_tool as fr', content)
-        
-        # Remove any duplicate 'as fr' patterns
-        content = content.replace("as fr as fr", "as fr")
-        
-        with open("prediction.py", "w") as f:
-            f.write(content)
-        print("✅ Imports fixed!")
-    except Exception as e:
-        print(f"⚠️ Could not fix imports: {e}")
+    # Step 2: Fix imports in ALL converted Python files
+    py_files = ["climaticscoring.py", "Financial_risk_tool.py", "prediction.py"]
+    
+    for py_file in py_files:
+        if not os.path.exists(py_file):
+            print(f"⚠️ {py_file} not found, skipping")
+            continue
+            
+        try:
+            with open(py_file, "r") as f:
+                content = f.read()
+            
+            # Remove 'import import_ipynb' lines
+            content = re.sub(r'^import import_ipynb.*$', '', content, flags=re.MULTILINE)
+            
+            # Fix duplicate import patterns
+            content = re.sub(r'import Financial_risk_tool\s+(?:as\s+fr\s*)?', 'import Financial_risk_tool as fr', content)
+            content = content.replace("as fr as fr", "as fr")
+            content = content.replace("import import_ipynb", "# import_ipynb removed")
+            
+            with open(py_file, "w") as f:
+                f.write(content)
+            print(f"✅ Fixed imports in {py_file}")
+        except Exception as e:
+            print(f"⚠️ Could not fix {py_file}: {e}")
 
-    # Step 3: Run the app
+    # Step 3: Run the main app
     cmd = [
         sys.executable,
         "prediction.py",
