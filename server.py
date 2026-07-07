@@ -23,17 +23,19 @@ def main():
             nb
         ], check=False)
 
-    # Step 2: Fix imports in prediction.py (MORE PRECISE)
+    # Step 2: Fix imports in prediction.py (CORRECTED)
     try:
         with open("prediction.py", "r") as f:
             content = f.read()
         
-        # Remove the problematic import line completely
+        # Remove the import_ipynb line completely
         content = re.sub(r'^import import_ipynb.*$', '', content, flags=re.MULTILINE)
         
-        # Fix the Financial_risk_tool import (avoid double 'as fr')
-        content = content.replace("import Financial_risk_tool as fr as fr", "import Financial_risk_tool as fr")
-        content = content.replace("import Financial_risk_tool", "import Financial_risk_tool as fr")
+        # Remove any existing 'as fr' and add it correctly
+        content = re.sub(r'import Financial_risk_tool\s+(?:as\s+fr\s*)?', 'import Financial_risk_tool as fr', content)
+        
+        # Remove any duplicate 'as fr' patterns
+        content = content.replace("as fr as fr", "as fr")
         
         with open("prediction.py", "w") as f:
             f.write(content)
