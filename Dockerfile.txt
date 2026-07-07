@@ -1,0 +1,29 @@
+# 1. Base image - Python 3.9
+FROM python:3.9-slim
+
+# 2. Set working directory inside container
+WORKDIR /app
+
+# 3. Install system dependencies (needed for some packages)
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# 4. Copy requirements file first (for better caching)
+COPY requirements.txt .
+
+# 5. Install Python packages
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 6. Copy ALL your files into the container
+COPY . .
+
+# 7. Tell Render which port to use
+ENV PORT=10000
+
+# 8. Expose the port (informational)
+EXPOSE $PORT
+
+# 9. Start Voilà with correct binding
+CMD voila prediction.ipynb --port=$PORT --no-browser --VoilaConfiguration.ip=0.0.0.0 --VoilaConfiguration.port=$PORT
