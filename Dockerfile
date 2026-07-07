@@ -17,4 +17,5 @@ ENV PORT=10000
 
 EXPOSE $PORT
 
-CMD voila prediction.ipynb --port=$PORT --no-browser --ip=0.0.0.0
+# Run the Python script instead of Voilà directly
+CMD python server.py
