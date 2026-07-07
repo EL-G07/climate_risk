@@ -5,10 +5,14 @@ import subprocess
 def main():
     # Get the port from Render's environment
     port = os.environ.get("PORT", "10000")
+    
+    # Set the IP environment variable for Jupyter Server
+    os.environ["JUPYTER_SERVER_IP"] = "0.0.0.0"
+    
     print(f"🚀 Starting Voilà on port {port}")
     sys.stdout.flush()
 
-    # Build the command
+    # Build the command - this is the simplest version
     cmd = [
         "voila",
         "prediction.ipynb",
@@ -17,10 +21,11 @@ def main():
     ]
 
     print(f"Running: {' '.join(cmd)}")
+    print(f"Environment JUPYTER_SERVER_IP: {os.environ.get('JUPYTER_SERVER_IP')}")
     sys.stdout.flush()
 
     try:
-        # Run the command and wait for it to finish
+        # Run the command
         subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
         print(f"❌ Voilà failed with error code: {e.returncode}")
