@@ -1,37 +1,38 @@
 import os
 import sys
 import subprocess
+import time
 
 def main():
-    # Get the port from Render's environment
     port = os.environ.get("PORT", "10000")
-    
-    # Set the IP environment variable for Jupyter Server
-    os.environ["JUPYTER_SERVER_IP"] = "0.0.0.0"
-    
-    print(f"🚀 Starting Voilà on port {port}")
+    print(f"🚀 Starting Jupyter Server on port {port}")
     sys.stdout.flush()
 
-    # Build the command - this is the simplest version
+    # Step 1: Convert notebook to Python script
+    print("📄 Converting notebook to Python script...")
+    subprocess.run([
+        sys.executable, "-m", "nbconvert",
+        "--to", "script",
+        "prediction.ipynb"
+    ], check=True)
+
+    # Step 2: Run the converted script with Jupyter's server
+    print("🚀 Starting the application...")
     cmd = [
-        "voila",
-        "prediction.ipynb",
-        f"--port={port}",
+        sys.executable,
+        "prediction.py",  # The converted script
+        "--port=" + port,
+        "--ip=0.0.0.0",   # This works with Jupyter!
         "--no-browser"
     ]
-
+    
     print(f"Running: {' '.join(cmd)}")
-    print(f"Environment JUPYTER_SERVER_IP: {os.environ.get('JUPYTER_SERVER_IP')}")
     sys.stdout.flush()
-
+    
     try:
-        # Run the command
         subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Voilà failed with error code: {e.returncode}")
-        sys.exit(e.returncode)
     except Exception as e:
-        print(f"❌ An unexpected error occurred: {e}")
+        print(f"❌ Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
