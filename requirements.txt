@@ -9,4 +9,3 @@ folium
 geopandas
 shapely
 dash-bootstrap-components
-traitlets
