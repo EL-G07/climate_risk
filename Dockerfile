@@ -4,7 +4,7 @@ FROM python:3.9-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (needed for some Python packages)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
@@ -25,5 +25,6 @@ ENV PORT=10000
 # Expose the port
 EXPOSE $PORT
 
-# Start Voilà with explicit binding to 0.0.0.0
-CMD voila prediction.ipynb --port=$PORT --no-browser --VoilaConfiguration.ip=0.0.0.0 --VoilaConfiguration.port=$PORT
+# Start Voilà with correct binding
+# The key fix: use --ip=0.0.0.0 (not --VoilaConfiguration.ip)
+CMD voila prediction.ipynb --port=$PORT --no-browser --ip=0.0.0.0 --allow-root
